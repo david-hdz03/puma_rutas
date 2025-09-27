@@ -82,7 +82,6 @@ class DatabaseHelper {
     final estadioId = baseMap['Estadio Olímpico']!;
     final metrobusCUId = baseMap['Metrobús CU']!;
     final enalltId = baseMap['E.N.A.L.L.T. / Anexo de Filosofía']!;
-    final zonaCulturalId = baseMap['Zona Cultural']!;
     final metrobusCU2Id = baseMap['Metrobús CU-2']!;
     final filosofiaId = baseMap['Facultad de Filosofía']!;
 

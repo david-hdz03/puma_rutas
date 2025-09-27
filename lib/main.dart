@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'database_helper.dart';
 import 'dart:io' show Platform;
+import 'route_detail_screen.dart';
 
 Future<void> main() async {
   // Initialize FFI for desktop platforms
@@ -28,8 +28,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF65727A), // .color5
           brightness: Brightness.light,
-          background: const Color(0xFFE6E8E3), // .color1
-          onBackground: const Color(0xFF65727A), // .color5
           surface: const Color(0xFFD7DACF), // .color2
           onSurface: const Color(0xFF65727A), // .color5
           primary: const Color(0xFF65727A), // .color5
@@ -114,27 +112,25 @@ class _RouteListScreenState extends State<RouteListScreen> {
                           final routes = routeSnapshot.data!;
                           return Column(
                             children: routes.map((route) {
+                              final routeId = route['id'] as int;
                               final routeName = route['name'] as String;
                               final routeColor = Color(route['color'] as int);
                               return Container(
                                 color: const Color(0xFFD7DACF), // .color2
                                 child: ListTile(
                                   onTap: () {
-                                    final imagePath = 'assets/images/route-$routeName.jpg';
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => FullScreenImageScreen(
-                                          imagePath: imagePath,
+                                        builder: (context) => RouteDetailScreen(
+                                          routeId: routeId,
                                           routeName: routeName,
                                           routeColor: routeColor,
                                         ),
                                       ),
                                     );
                                   },
-                                  leading: Hero(
-                                    tag: 'route-avatar-$routeName',
-                                    child: CircleAvatar(
+                                  leading: CircleAvatar(
                                       backgroundColor: routeColor,
                                       child: Text(
                                         routeName,
@@ -146,7 +142,6 @@ class _RouteListScreenState extends State<RouteListScreen> {
                                         ),
                                       ),
                                     ),
-                                  ),
                                   title: Text(
                                     'Ruta $routeName',
                                     style: Theme.of(context).textTheme.bodyMedium,
@@ -164,51 +159,6 @@ class _RouteListScreenState extends State<RouteListScreen> {
             );
           }
         },
-      ),
-    );
-  }
-}
-
-class FullScreenImageScreen extends StatelessWidget {
-  final String imagePath;
-  final String routeName;
-  final Color routeColor;
-
-  const FullScreenImageScreen({
-    super.key,
-    required this.imagePath,
-    required this.routeName,
-    required this.routeColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black87,
-      appBar: AppBar(
-        title: Text('Ruta $routeName'),
-        backgroundColor: routeColor,
-        foregroundColor: routeColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-      ),
-      body: Center(
-        child: Hero(
-          tag: 'route-image-$routeName',
-          child: PhotoView(
-            imageProvider: AssetImage(imagePath),
-            errorBuilder: (context, error, stackTrace) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error, size: 60, color: Colors.red),
-                    SizedBox(height: 10),
-                    Text('No se pudo cargar la imagen.', style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
       ),
     );
   }
